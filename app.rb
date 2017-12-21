@@ -2,7 +2,7 @@ require 'bundler/setup'
 Bundler.require
 #require 'sinatra/reloader' if development?
 require 'sinatra'
-require 'sinatra-websocket'
+#require 'sinatra-websocket'
 require 'sinatra/json'
 #require './models.rb'
 require 'open-uri'
