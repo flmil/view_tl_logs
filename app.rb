@@ -12,6 +12,7 @@ require 'json'
 require 'twitter_oauth'
 require './slack'
 
+
 Time.zone = "Tokyo"
 ActiveRecord::Base.default_timezone = :local
 
@@ -31,6 +32,10 @@ get '/' do
 	@session = session
 	logger.info @session
 	erb :index
+end
+
+get '/e' do
+	erb :404
 end
 
 get '/request_token' do
