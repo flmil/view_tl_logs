@@ -1,6 +1,6 @@
 require 'bundler/setup'
 Bundler.require
-require 'sinatra/reloader' if development?
+#require 'sinatra/reloader' if development?
 require 'sinatra'
 require 'sinatra-websocket'
 require 'sinatra/json'
@@ -14,9 +14,6 @@ require './slack'
 
 Time.zone = "Tokyo"
 ActiveRecord::Base.default_timezone = :local
-
-set :server, 'thin'
-set :sockets, Hash.new { |h, k| h[k] = [] }
 
 enable :sessions
 
