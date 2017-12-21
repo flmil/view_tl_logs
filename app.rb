@@ -35,7 +35,7 @@ get '/' do
 end
 
 get '/e' do
-	erb :404
+	#erb :404
 end
 
 get '/request_token' do
