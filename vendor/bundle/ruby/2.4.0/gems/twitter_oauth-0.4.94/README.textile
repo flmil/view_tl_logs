@@ -1,0 +1,148 @@
+h1. Twitter OAuth REST API client library for Ruby
+
+h2. Current Status
+
+Twitter turned off access to the v1 API so this project is currently migrating to v1.1.  Unfortunately everything is not backward-compatible.
+
+The v.0.4.9x series of this gem is work in progress getting the library compatible with Twitter v1.1 - when complete we will push v0.5.0 of this library.
+
+h2. Install the gem
+
+gem 'twitter_oauth'
+
+h2. Using the gem
+
+To make authorized requests with the client library you'll need to "create a Twitter OAuth Application":http://twitter.com/oauth_clients/new.
+
+See "sinitter":http://github.com/moomerman/sinitter/tree/master for a full website integration example.
+
+h2. Unauthorized request example
+
+Since Twitter API v1.1 all requests are required to be authorized.
+
+h2. Authorized request example
+
+To use the full power of the Twitter API you need to authorize your application and a valid Twitter user via OAuth.
+An example showing how to update the status of an authorized user is below.
+
+Firstly we need to create an instance of the client with your application client credentials you have been given by Twitter
+when you set up your application.
+
+<pre><code>client = TwitterOAuth::Client.new(
+    :consumer_key => 'YOUR_APP_CONSUMER_KEY',
+    :consumer_secret => 'YOUR_APP_CONSUMER_SECRET'
+)
+request_token = client.request_token(:oauth_callback => oauth_confirm_url)
+#:oauth_callback required for web apps, since oauth gem by default force PIN-based flow
+#( see http://groups.google.com/group/twitter-development-talk/browse_thread/thread/472500cfe9e7cdb9/848f834227d3e64d )
+
+
+request_token.authorize_url
+=> http://twitter.com/oauth/authorize?oauth_token=TOKEN
+</code></pre>
+
+In your application your user would be redirected to Twitter to authorize the application at this point.  You'll need to store
+the request token (usually in the session) for later.  The code continues below assuming the user has authorized your application.
+
+NOTE: Above we called the <code>client.request_token(...)</code> method, this authorizes the application on every call.  You can also use the <code>client.authentication_request_token(...)</code> method which automatically redirects back to your application if the user has previously authorized the app.
+
+<pre><code>access_token = client.authorize(
+  request_token.token,
+  request_token.secret,
+  :oauth_verifier => params[:oauth_verifier]
+)
+
+client.authorized?
+=> true
+
+client.update('checking out the twitter_oauth library') # sends a twitter status update
+</code></pre>
+
+Now if you keep hold of the access_token (usually in the database) for this user you won't need to re-authorize them next time.  When you create an instance of the client you can just pass in the access token and secret that you have stored.
+
+<pre><code>access_token = @user.access_token # assuming @user
+client = TwitterOAuth::Client.new(
+    :consumer_key => 'YOUR_CONSUMER_KEY',
+    :consumer_secret => 'YOUR_APP_CONSUMER_SECRET',
+    :token => access_token.token,
+    :secret => access_token.secret
+)
+
+client.authorized?
+=> true
+</code></pre>
+
+h2. PIN-based flow
+
+If you're writing a command line application or desktop app, you will probably want to use the PIN-based authorization method rather than the website redirect method.
+
+<pre><code>client = TwitterOAuth::Client.new(
+  :consumer_key => 'YOUR_CONSUMER_KEY',
+  :consumer_secret => 'YOUR_APP_CONSUMER_SECRET'
+)
+
+request_token = client.authentication_request_token(
+  :oauth_callback => 'oob'
+)
+
+puts request_token.authorize_url
+
+print 'Please visit the URL and enter the code: '
+code = gets.strip
+
+access_token = client.authorize(
+  request_token.token,
+  request_token.secret,
+  :oauth_verifier => code
+)
+
+client.authorized?
+=> true
+</code></pre>
+
+The special oauth callback value of <code>oob</code> tells Twitter you want to do the PIN-based authentication.  The user goes to the authorization URL to get their unique code and they paste that into your application.  Finally we authorize the user with this code.
+
+h2. Working with a Proxy
+
+Services such as "Apigee Analytics and API Management":http://apigee.com/ require you to proxy your API requests through their servers.  The workflow is as follows.
+
+First you need to authorize the Twitter user via OAuth directly via the Twitter API (this part cannot be proxied)
+
+<pre><code>client = TwitterOAuth::Client.new(
+    :consumer_key => 'YOUR_APP_CONSUMER_KEY',
+    :consumer_secret => 'YOURA_APP_CONSUMER_SECRET'
+)
+request_token = client.request_token(:oauth_callback => 'YOUR_CALLBACK_URL')
+
+request_token.authorize_url
+=> http://twitter.com/oauth/authorize?oauth_token=TOKEN
+</code></pre>
+
+The user is sent to Twitter to allow the application to access their account and then you need to obtain the access token for the user
+
+<pre><code>access_token = client.authorize(
+  request_token.token,
+  request_token.secret,
+  :oauth_verifier => params[:oauth_verifier]
+)
+
+client.authorized?
+=> true
+</code></pre>
+
+Now you can make all further API calls through the proxy of your choice:
+
+<pre><code>access_token = @user.access_token # assuming @user
+client = TwitterOAuth::Client.new(
+    :proxy => 'http://XXX.YYY.apigee.com',
+    :consumer_key => 'YOUR_CONSUMER_KEY',
+    :consumer_secret => 'YOUR-CONSUMER-SECRET',
+    :token => access_token.token,
+    :secret => access_token.secret
+)
+
+client.authorized?
+=> true
+
+client.update('Proxy via Apigee is working')
+</code></pre>

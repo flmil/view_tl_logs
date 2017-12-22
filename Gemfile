@@ -15,7 +15,7 @@ gem 'sinatra-activerecord'
 gem "pry-byebug"
 gem 'bcrypt'
 gem 'cleanup'
-gem 'csv'
+#gem 'csv'
 gem 'sinatra-websocket'
 gem 'twitter_oauth'  # 追加
 gem 'twitter'

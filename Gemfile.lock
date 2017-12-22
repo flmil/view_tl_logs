@@ -24,7 +24,6 @@ GEM
       bundler (~> 1.12)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
-    csv (1.0.0)
     curb (0.9.4)
     daemons (1.2.5)
     domain_name (0.5.20170404)
@@ -157,7 +156,6 @@ DEPENDENCIES
   activerecord
   bcrypt
   cleanup
-  csv
   curb
   oauth
   omniauth-twitter

@@ -1,0 +1,19 @@
+current directory: /Users/Rei/Desktop/Programming/Secret_Project/test_twitter_get_tl/vendor/bundle/ruby/2.4.0/gems/byebug-9.1.0/ext/byebug
+/Users/Rei/.rbenv/versions/2.4.1/bin/ruby -r ./siteconf20171222-61927-1qvc9iz.rb extconf.rb
+creating Makefile
+
+current directory: /Users/Rei/Desktop/Programming/Secret_Project/test_twitter_get_tl/vendor/bundle/ruby/2.4.0/gems/byebug-9.1.0/ext/byebug
+make "DESTDIR=" clean
+
+current directory: /Users/Rei/Desktop/Programming/Secret_Project/test_twitter_get_tl/vendor/bundle/ruby/2.4.0/gems/byebug-9.1.0/ext/byebug
+make "DESTDIR="
+compiling breakpoint.c
+compiling byebug.c
+compiling context.c
+compiling locker.c
+compiling threads.c
+linking shared-object byebug/byebug.bundle
+
+current directory: /Users/Rei/Desktop/Programming/Secret_Project/test_twitter_get_tl/vendor/bundle/ruby/2.4.0/gems/byebug-9.1.0/ext/byebug
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 byebug.bundle ./.gem.20171222-61927-i2ab70/byebug
